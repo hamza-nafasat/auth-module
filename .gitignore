@@ -1,0 +1,56 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.env
+*.env
+*.venv
+Pipfile
+Pipfile.lock
+
+# Logs
+logs/
+*.log
+*.out
+*.err
+*.pid
+*.gz
+nohup.out
+
+# Cache files
+.cache/
+*.sqlite3
+*.db
+
+# Editor / IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Python dependency files
+requirements.txt
+poetry.lock
+
+# FastAPI generated files
+openapi.json
+
+# Docker files
+docker-compose.override.yml
+*.dockerignore
+
+# Migrations (if using Alembic)
+migrations/
+
+# Ignore test coverage reports
+.coverage
+htmlcov/
+*.cover
