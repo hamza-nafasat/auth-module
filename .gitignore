@@ -34,7 +34,6 @@ nohup.out
 
 # OS-specific files
 .DS_Store
-Thumbs.db
 
 # Python dependency files
 requirements.txt
