@@ -4,6 +4,7 @@ from utils.features import convertMongoDict, sendResponse, sendError
 from utils.jwt import create_access_token, create_refresh_token
 from utils.sendTokens import sendTokens
 from configs.envConf import getEnv
+from fastapi import Response
 
 
 # user register controller
@@ -13,11 +14,8 @@ async def register_controller(body):
         isExist = await User.find_one({"email": body.email})
         if isExist:
             return sendError(403, "User already exist")
-        # hash password
-        # --------------
+        # hash password and create user in database
         body.password = hash_password(body.password)
-        # create user in database
-        # --------------
         user = await User.insert_one(body.dict())
         if not user.inserted_id:
             return sendError(500, "User creation failed")
@@ -46,8 +44,9 @@ async def login_controller(body):
 
 # user logout controller
 # ----------------------------------------------------------
-async def logout_controller():
+async def logout_controller(response: Response, user: dict):
     try:
+        print("user", user)
         response = sendResponse(200, "User Logged Out Successfully")
         response.delete_cookie(getEnv("ACCESS_TOKEN_NAME"))
         response.delete_cookie(getEnv("REFRESH_TOKEN_NAME"))
