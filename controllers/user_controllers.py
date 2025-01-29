@@ -38,7 +38,7 @@ async def login_controller(body):
             return sendError(404, "You need to register first")
         if not verify_password(body.password, user["password"]):
             return sendError(401, "Invalid credentials")
-        return sendTokens(200, "User Created Successfully", convertMongoDict(user))
+        return sendTokens(200, "User Logged In Successfully", convertMongoDict(user))
     except Exception as e:
         print("error in login controller", str(e))
         return sendError(500, "Internal Server Error", str(e))

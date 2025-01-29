@@ -17,10 +17,10 @@ async def register(request: RegisterRequestSchema):
 
 
 @router.post("/login")
-async def register(request: LoginRequestSchema):
+async def login(request: LoginRequestSchema):
     return await login_controller(LoginRequestSchema(**request.dict()))
 
 
-@router.get("/logout")
-async def register():
+@router.post("/logout")
+async def logout():
     return await logout_controller()
