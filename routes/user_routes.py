@@ -1,6 +1,7 @@
 from utils.features import sendError
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, Request, Response
 from schemas.user_schema import RegisterRequestSchema, LoginRequestSchema
+from middlewares.isAuthenticated import isAuthenticated
 from controllers.user_controllers import (
     register_controller,
     login_controller,
@@ -22,5 +23,5 @@ async def login(request: LoginRequestSchema):
 
 
 @router.post("/logout")
-async def logout():
-    return await logout_controller()
+async def logout(response: Response, user: dict = Depends(isAuthenticated)):
+    return await logout_controller(response, user)
