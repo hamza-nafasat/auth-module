@@ -1,6 +1,8 @@
 from fastapi.responses import JSONResponse
 from bson import ObjectId
 from pydantic import BaseModel
+from fastapi import Response
+import json
 
 
 class PyObjectId(ObjectId):
@@ -50,3 +52,12 @@ def sendError(statusCode: int, message: str, error=None):
         content=response,
         status_code=statusCode or 500,
     )
+
+
+def setResponse(response: JSONResponse, statusCode: int, message: None, data=None):
+    response.body
+    response.status_code = statusCode
+    if message:
+        response.body["message"] = message
+    if data:
+        response.body["data"] = data

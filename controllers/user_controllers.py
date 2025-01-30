@@ -1,10 +1,11 @@
 from configs.database import User
 from utils.security import hash_password, verify_password
-from utils.features import convertMongoDict, sendResponse, sendError
+from utils.features import convertMongoDict, sendResponse, sendError, setResponse
 from utils.jwt import create_access_token, create_refresh_token
 from utils.sendTokens import sendTokens
 from configs.envConf import getEnv
 from fastapi import Response
+from fastapi.responses import JSONResponse
 
 
 # user register controller
@@ -46,11 +47,20 @@ async def login_controller(body):
 # ----------------------------------------------------------
 async def logout_controller(response: Response, user: dict):
     try:
-        print("user", user)
-        response = sendResponse(200, "User Logged Out Successfully")
+        print("user in logout handler", user)
         response.delete_cookie(getEnv("ACCESS_TOKEN_NAME"))
         response.delete_cookie(getEnv("REFRESH_TOKEN_NAME"))
-        return response
+        return {"success": True, "message": "User Logged Out Successfully"}
     except Exception as e:
-        print("error in login controller", str(e))
+        print("error in logout controller", str(e))
+        return sendError(500, "Internal Server Error", str(e))
+
+
+# get my profile controller
+# ----------------------------------------------------------
+async def getMyProfile_controller(user: dict):
+    try:
+        return {"success": True, "data": convertMongoDict(user)}
+    except Exception as e:
+        print("error in getMyProfile controller", str(e))
         return sendError(500, "Internal Server Error", str(e))

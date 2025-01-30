@@ -4,6 +4,7 @@ from utils.jwt import create_access_token, decode_token
 from configs.database import User
 from configs.constants import accessTokenOptions
 from bson import ObjectId
+from utils.features import convertMongoDict
 
 
 async def isAuthenticated(request: Request, response: Response):
@@ -19,7 +20,7 @@ async def isAuthenticated(request: Request, response: Response):
                 raise HTTPException(
                     status_code=401, detail="User not found from access token"
                 )
-            return user
+            return convertMongoDict(user)
         # If access token is missing, check for refresh token   Decode refresh token and fetch user
         refreshToken = request.cookies.get(getEnv("REFRESH_TOKEN_NAME"))
         if not refreshToken:
@@ -35,7 +36,7 @@ async def isAuthenticated(request: Request, response: Response):
         # Generate new access token
         accessToken = create_access_token({"_id": str(user["_id"])})
         response.set_cookie(value=accessToken, **accessTokenOptions)
-        return user
+        return convertMongoDict(user)
     except Exception as e:
         print("Error in isAuthenticated middleware:", str(e))
         raise HTTPException(status_code=401, detail="Please Login Again")
