@@ -6,6 +6,7 @@ from controllers.user_controllers import (
     register_controller,
     login_controller,
     logout_controller,
+    getMyProfile_controller,
 )
 
 
@@ -25,3 +26,8 @@ async def login(request: LoginRequestSchema):
 @router.post("/logout")
 async def logout(response: Response, user: dict = Depends(isAuthenticated)):
     return await logout_controller(response, user)
+
+
+@router.get("/my-profile")
+async def getMyProfile(user: dict = Depends(isAuthenticated)):
+    return await getMyProfile_controller(user)
