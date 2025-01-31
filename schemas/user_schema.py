@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr
+from typing import Optional
 
 
 class RegisterRequestSchema(BaseModel):
@@ -12,9 +13,6 @@ class LoginRequestSchema(BaseModel):
     password: str
 
 
-class ResponseSchema(BaseModel):
-    id: str
-    name: str
-    email: EmailStr
-    is_active: bool
-    is_verified: bool
+class UpdateProfileSchema(BaseModel):
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None

@@ -1,12 +1,17 @@
 from utils.features import sendError
 from fastapi import APIRouter, Depends, Request, Response
-from schemas.user_schema import RegisterRequestSchema, LoginRequestSchema
+from schemas.user_schema import (
+    LoginRequestSchema,
+    RegisterRequestSchema,
+    UpdateProfileSchema,
+)
 from middlewares.isAuthenticated import isAuthenticated
 from controllers.user_controllers import (
     register_controller,
     login_controller,
     logout_controller,
     getMyProfile_controller,
+    updateProfile_controller,
 )
 
 
@@ -31,3 +36,10 @@ async def logout(response: Response, user: dict = Depends(isAuthenticated)):
 @router.get("/my-profile")
 async def getMyProfile(user: dict = Depends(isAuthenticated)):
     return await getMyProfile_controller(user)
+
+
+@router.patch("/my-profile")
+async def updateMyProfile(
+    req: UpdateProfileSchema, user: dict = Depends(isAuthenticated)
+):
+    return await updateProfile_controller(request, user)

@@ -6,6 +6,7 @@ from utils.sendTokens import sendTokens
 from configs.envConf import getEnv
 from fastapi import Response
 from fastapi.responses import JSONResponse
+from bson import ObjectId
 
 
 # user register controller
@@ -47,7 +48,6 @@ async def login_controller(body):
 # ----------------------------------------------------------
 async def logout_controller(response: Response, user: dict):
     try:
-        print("user in logout handler", user)
         response.delete_cookie(getEnv("ACCESS_TOKEN_NAME"))
         response.delete_cookie(getEnv("REFRESH_TOKEN_NAME"))
         return {"success": True, "message": "User Logged Out Successfully"}
@@ -61,6 +61,25 @@ async def logout_controller(response: Response, user: dict):
 async def getMyProfile_controller(user: dict):
     try:
         return {"success": True, "data": convertMongoDict(user)}
+    except Exception as e:
+        print("error in getMyProfile controller", str(e))
+        return sendError(500, "Internal Server Error", str(e))
+
+
+# get my profile controller
+# ----------------------------------------------------------
+async def updateProfile_controller(data, user: dict):
+    try:
+        user_id = user["_id"]
+        dataForUpdate = {}
+        if data.name:
+            dataForUpdate["name"] = data.name
+        if data.email:
+            dataForUpdate["email"] = data.email
+        if not dataForUpdate:
+            return sendError(400, "At least one field is required")
+        await User.update_one({"_id": user_id}, {"$set": dataForUpdate})
+        return sendResponse(200, "Profile Updated Successfully")
     except Exception as e:
         print("error in getMyProfile controller", str(e))
         return sendError(500, "Internal Server Error", str(e))
