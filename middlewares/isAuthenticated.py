@@ -1,6 +1,6 @@
 from fastapi import Request, HTTPException, Response
 from configs.envConf import getEnv
-from utils.jwt import create_access_token, decode_token
+from utils.jwt import decode_token, create_jwt_token
 from configs.database import User
 from configs.constants import accessTokenOptions
 from bson import ObjectId
@@ -28,13 +28,17 @@ async def isAuthenticated(request: Request, response: Response):
         refreshPayload = decode_token(refreshToken, getEnv("REFRESH_TOKEN_SECRET"))
         if not refreshPayload:
             raise HTTPException(status_code=401, detail="Refresh token not decoded")
-        user = await User.find_one({"_id": ObjectId(refreshPayload["_id"])})
+        user = await User.find_one({"email": refreshPayload["email"]})
         if not user:
             raise HTTPException(
                 status_code=401, detail="User not found from refresh token"
             )
         # Generate new access token
-        accessToken = create_access_token({"_id": str(user["_id"])})
+        accessToken = create_jwt_token(
+            {"_id": str(user["_id"])},
+            getEnv("ACCESS_TOKEN_SECRET"),
+            int(getEnv("ACCESS_TOKEN_EXPIRE_SECONDS")),
+        )
         response.set_cookie(value=accessToken, **accessTokenOptions)
         return user
     except Exception as e:
