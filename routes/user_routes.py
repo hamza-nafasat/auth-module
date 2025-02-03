@@ -10,6 +10,8 @@ from controllers.user_controllers import (
     register_controller,
     login_controller,
     logout_controller,
+    forgetPassword_controller,
+    resetPassword_controller,
     getMyProfile_controller,
     updateProfile_controller,
 )
@@ -31,6 +33,16 @@ async def login(request: LoginRequestSchema):
 @router.post("/logout")
 async def logout(response: Response, user: dict = Depends(isAuthenticated)):
     return await logout_controller(response, user)
+
+
+@router.get("/forget-password")
+async def forgetPassword(request: Request):
+    return await forgetPassword_controller(request)
+
+
+@router.patch("/reset-password")
+async def resetPassword(request: Request):
+    return await resetPassword_controller(request)
 
 
 @router.get("/my-profile")
